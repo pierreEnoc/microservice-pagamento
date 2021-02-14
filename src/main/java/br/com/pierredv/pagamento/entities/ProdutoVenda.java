@@ -12,6 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.modelmapper.ModelMapper;
+
+import br.com.pierredv.pagamento.data.vo.ProdutoVendaVO;
+
 @Entity
 @Table(name = "produto_venda")
 public class ProdutoVenda implements Serializable {
@@ -36,6 +40,7 @@ public class ProdutoVenda implements Serializable {
 	public ProdutoVenda() {
 		
 	}
+	
 	public ProdutoVenda(Long id, Long idProduto, Integer quantidade) {
 		super();
 		this.id = id;
@@ -60,6 +65,15 @@ public class ProdutoVenda implements Serializable {
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
 	}
+	
+	public Venda getVenda() {
+		return venda;
+	}
+
+	public void setVenda(Venda venda) {
+		this.venda = venda;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -83,9 +97,15 @@ public class ProdutoVenda implements Serializable {
 			return false;
 		return true;
 	}
+	
+	public static ProdutoVenda create(ProdutoVendaVO produtoVendaVO) {
+		return new ModelMapper().map(produtoVendaVO, ProdutoVenda.class);
+	}
+	
 	@Override
 	public String toString() {
 		return "ProdutoVenda [id=" + id + ", idProduto=" + idProduto + ", quantidade=" + quantidade + "]";
 	}
-
+	
+	
 }

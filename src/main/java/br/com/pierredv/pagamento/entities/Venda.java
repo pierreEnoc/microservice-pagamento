@@ -14,7 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import br.com.pierredv.pagamento.data.vo.VendaVO;
 
 @Entity
 @Table(name = "venda")
@@ -46,6 +49,10 @@ public class Venda implements Serializable {
 		this.data = data;
 		this.valorTotal = valorTotal;
 		this.produtos = produtos;
+	}
+	
+	public static Venda create(VendaVO vendaVO) {
+		return new ModelMapper().map(vendaVO, Venda.class);
 	}
 
 	public Long getId() {
