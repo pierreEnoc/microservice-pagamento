@@ -20,40 +20,40 @@ public class VendaService {
 
 	private final VendaRepository vendaRepository;
 	private final ProdutoVendaRepository produtoVendaRepository;
-	
+
 	@Autowired
-	public VendaService(VendaRepository vendaRepository, ProdutoVendaRepository produtoVendaRepository ) {
+	public VendaService(VendaRepository vendaRepository,ProdutoVendaRepository produtoVendaRepository) {
 		this.vendaRepository = vendaRepository;
-		this.produtoVendaRepository = produtoVendaRepository;
+		this.produtoVendaRepository =  produtoVendaRepository;
 	}
 	
 	public VendaVO create(VendaVO vendaVO) {
 		Venda venda = vendaRepository.save(Venda.create(vendaVO));
 		
-		List<ProdutoVenda> produtosSalvos = new ArrayList<>();
+		List<ProdutoVenda> produtosSalvos =  new ArrayList<>();
 		vendaVO.getProdutos().forEach(p -> {
 			ProdutoVenda pv = ProdutoVenda.create(p);
 			pv.setVenda(venda);
 			produtosSalvos.add(produtoVendaRepository.save(pv));
 		});
-		
 		venda.setProdutos(produtosSalvos);
+		
 		return VendaVO.create(venda);
 	}
 	
-	public Page<VendaVO> findAll(Pageable pageble) {
-		var page = vendaRepository.findAll(pageble);
-		return page.map(this::convertToProdutov0);
-		
+	public Page<VendaVO> findAll(Pageable pageable) {
+		var page = vendaRepository.findAll(pageable);
+		return page.map(this::convertToVendaVO);
 	}
-	
-	private VendaVO convertToProdutov0(Venda venda) {
+
+	private VendaVO convertToVendaVO(Venda venda) {
 		return VendaVO.create(venda);
 	}
 	
 	public VendaVO findById(Long id) {
 		var entity = vendaRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("no records found for this Id"));
-		return VendaVO.create(entity);		
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+		return VendaVO.create(entity);
 	}
+	
 }

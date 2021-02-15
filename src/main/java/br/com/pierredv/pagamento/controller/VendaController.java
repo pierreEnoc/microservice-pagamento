@@ -26,7 +26,7 @@ import br.com.pierredv.pagamento.data.vo.VendaVO;
 import br.com.pierredv.pagamento.services.VendaService;
 
 @RestController
-@RequestMapping("/vanda")
+@RequestMapping("/venda")
 public class VendaController {
 	
 	private final VendaService vendaService;
@@ -37,42 +37,38 @@ public class VendaController {
 		this.vendaService = vendaService;
 		this.assembler = assembler;
 	}
-	
-	@GetMapping(value = "/{id}", produces = {"application/json", "application/xml", "application/x-yaml"})
-	public VendaVO findById(@PathVariable("id") Long id) {
+	@GetMapping(value = "/{id}", produces = {"application/json","application/xml","application/x-yaml"})
+	public VendaVO findById(@PathVariable("id")  Long id) {
 		VendaVO vendaVO = vendaService.findById(id);
 		vendaVO.add(linkTo(methodOn(VendaController.class).findById(id)).withSelfRel());
-		
 		return vendaVO;
 	}
 	
-
-	@GetMapping(produces = {"application/json", "application/xml", "application/x-yaml"})
-	public  ResponseEntity<?> finddAll(@RequestParam(value = "page", defaultValue = "0") int page,
+	@GetMapping(produces = {"application/json","application/xml","application/x-yaml"})
+	public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "limit", defaultValue = "12") int limit,
 			@RequestParam(value = "direction", defaultValue = "asc") String direction) {
 		
 		var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
 		
-		Pageable pageable = PageRequest.of(page, limit, Sort.by(sortDirection, "nome"));
+		Pageable pageable = PageRequest.of(page,limit, Sort.by(sortDirection,"data"));
 		
 		Page<VendaVO> vendas = vendaService.findAll(pageable);
 		vendas.stream()
-			.forEach(p -> p.add(linkTo(methodOn(VendaController.class).findById(p.getId())).withSelfRel()));
+				.forEach(p -> p.add(linkTo(methodOn(VendaController.class).findById(p.getId())).withSelfRel()));
 		
 		PagedModel<EntityModel<VendaVO>> pagedModel = assembler.toModel(vendas);
 		
-		return new ResponseEntity<>(pagedModel, HttpStatus.OK);
+		return new ResponseEntity<>(pagedModel,HttpStatus.OK);
 	}
 	
-		@PostMapping(produces = {"application/json","application/xml","application/x-yaml"}, 
-			     consumes = {"application/json","application/xml","application/x-yaml"})
-	public VendaVO create(@RequestBody VendaVO vendaVO) {
-		VendaVO proVo = vendaService.create(vendaVO);
-		proVo.add(linkTo(methodOn(VendaController.class).findById(proVo.getId())).withSelfRel());
-		return proVo;
-	}
-	
+	@PostMapping(produces = {"application/json","application/xml","application/x-yaml"}, 
+		     consumes = {"application/json","application/xml","application/x-yaml"})
+public VendaVO create(@RequestBody VendaVO vendaVO) {
+	VendaVO proVo = vendaService.create(vendaVO);
+	proVo.add(linkTo(methodOn(VendaController.class).findById(proVo.getId())).withSelfRel());
+	return proVo;
+}
 
 
 }
