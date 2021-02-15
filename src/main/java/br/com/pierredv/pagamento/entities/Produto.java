@@ -1,9 +1,6 @@
 package br.com.pierredv.pagamento.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.modelmapper.ModelMapper;
 
@@ -26,6 +23,7 @@ import lombok.ToString;
 public class Produto {
 
 	@Id
+	//@GeneratedValue(strategy = GenerationType.TABLE)
 	private Long id;
 
 	@Column(name = "estoque", nullable = false, length = 10)
@@ -34,5 +32,4 @@ public class Produto {
 	public static Produto create(ProdutoVO produtoVO) {
 		return new ModelMapper().map(produtoVO, Produto.class);
 	}
-
 }
